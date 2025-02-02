@@ -2,8 +2,6 @@ package gosf
 
 import (
 	"encoding/json"
-	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -18,8 +16,8 @@ type CallbackServer struct {
 	port     string
 	certFile string
 	keyFile  string
-	txCh     chan CBTx
-	acctCh   chan CBAcct
+	txCh     chan Tx
+	acctCh   chan Acct
 	logger   *slog.Logger
 }
 
@@ -31,17 +29,17 @@ func NewCallbackServer(port, certFile, keyFile string, logger *slog.Logger) *Cal
 		port:     port,
 		certFile: certFile,
 		keyFile:  keyFile,
-		txCh:     make(chan CBTx, 100),
-		acctCh:   make(chan CBAcct, 100),
+		txCh:     make(chan Tx, 100),
+		acctCh:   make(chan Acct, 100),
 		logger:   logger,
 	}
 }
 
-func (s *CallbackServer) GetTxChannel() <-chan CBTx {
+func (s *CallbackServer) GetTxChannel() <-chan Tx {
 	return s.txCh
 }
 
-func (s *CallbackServer) GetAcctChannel() <-chan CBAcct {
+func (s *CallbackServer) GetAcctChannel() <-chan Acct {
 	return s.acctCh
 }
 
@@ -64,29 +62,26 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	b, err := io.ReadAll(r.Body)
-	if err != nil {
-		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Failed to read request body", "error", err)
+	var tx Tx
+	if err := json.NewDecoder(r.Body).Decode(&tx); err != nil {
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Invalid request body", "error", err)
 		return
 	}
 
-	fmt.Println(string(b))
+	if tx.Timestamp == "" {
+		return
+	}
 
-	// var tx CBTx
-	// if err := json.NewDecoder(r.Body).Decode(&tx); err != nil {
-	// 	s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Invalid request body", "error", err)
-	// 	return
-	// }
+	if err := ParseTxActions(&tx); err != nil {
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Failed to parse tx actions", "error", err)
+		return
+	}
 
-	// if tx.Timestamp == "" {
-	// 	return
-	// }
-
-	// select {
-	// case s.txCh <- tx:
-	// default:
-	// 	s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
-	// }
+	select {
+	case s.txCh <- tx:
+	default:
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
+	}
 }
 
 func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Request) {
@@ -102,7 +97,7 @@ func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	var acct CBAcct
+	var acct Acct
 	if err := json.NewDecoder(r.Body).Decode(&acct); err != nil {
 		s.logger.Error("acct callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Invalid request body", "error", err)
 		return

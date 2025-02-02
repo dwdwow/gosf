@@ -37,86 +37,6 @@ const (
 	NetworkDevnet      Network = "devnet"
 )
 
-type ParsedTxType string
-
-const (
-	ParsedTxTypeNFTMint                 ParsedTxType = "NFT_MINT"
-	ParsedTxTypeTokenMint               ParsedTxType = "TOKEN_MINT"
-	ParsedTxTypeTokenCreate             ParsedTxType = "TOKEN_CREATE"
-	ParsedTxTypeSolTransfer             ParsedTxType = "SOL_TRANSFER"
-	ParsedTxTypeTokenTransfer           ParsedTxType = "TOKEN_TRANSFER"
-	ParsedTxTypeNFTTransfer             ParsedTxType = "NFT_TRANSFER"
-	ParsedTxTypeNFTBurn                 ParsedTxType = "NFT_BURN"
-	ParsedTxTypeTokenBurn               ParsedTxType = "TOKEN_BURN"
-	ParsedTxTypeNFTSale                 ParsedTxType = "NFT_SALE"
-	ParsedTxTypeNFTBid                  ParsedTxType = "NFT_BID"
-	ParsedTxTypeNFTBidCancel            ParsedTxType = "NFT_BID_CANCEL"
-	ParsedTxTypeNFTList                 ParsedTxType = "NFT_LIST"
-	ParsedTxTypeNFTListUpdate           ParsedTxType = "NFT_LIST_UPDATE"
-	ParsedTxTypeNFTListCancel           ParsedTxType = "NFT_LIST_CANCEL"
-	ParsedTxTypeMarketplaceWithdraw     ParsedTxType = "MARKETPLACE_WITHDRAW"
-	ParsedTxTypeCompressedNFTSale       ParsedTxType = "COMPRESSED_NFT_SALE"
-	ParsedTxTypeCompressedNFTList       ParsedTxType = "COMPRESSED_NFT_LIST"
-	ParsedTxTypeCompressedNFTListCancel ParsedTxType = "COMPRESSED_NFT_LIST_CANCEL"
-	ParsedTxTypeCompressedNFTListUpdate ParsedTxType = "COMPRESSED_NFT_LIST_UPDATE"
-	ParsedTxTypeCompressedNFTBid        ParsedTxType = "COMPRESSED_NFT_BID"
-	ParsedTxTypeCompressedNFTBidCancel  ParsedTxType = "COMPRESSED_NFT_BID_CANCEL"
-	ParsedTxTypeCompressedNFTTakeBid    ParsedTxType = "COMPRESSED_NFT_TAKE_BID"
-	ParsedTxTypeOfferLoan               ParsedTxType = "OFFER_LOAN"
-	ParsedTxTypeCancelLoan              ParsedTxType = "CANCEL_LOAN"
-	ParsedTxTypeTakeLoan                ParsedTxType = "TAKE_LOAN"
-	ParsedTxTypeRepayLoan               ParsedTxType = "REPAY_LOAN"
-	ParsedTxTypeForecloseLoan           ParsedTxType = "FORECLOSE_LOAN"
-	ParsedTxTypeRepayEscrowLoan         ParsedTxType = "REPAY_ESCROW_LOAN"
-	ParsedTxTypeExtendLoan              ParsedTxType = "EXTEND_LOAN"
-	ParsedTxTypeExtendEscrowLoan        ParsedTxType = "EXTEND_ESCROW_LOAN"
-	ParsedTxTypeRequestLoan             ParsedTxType = "REQUEST_LOAN"
-	ParsedTxTypeCancelRequestLoan       ParsedTxType = "CANCEL_REQUEST_LOAN"
-	ParsedTxTypeLiquidateLoan           ParsedTxType = "LIQUIDATE_LOAN"
-	ParsedTxTypeBuyNowPayLater          ParsedTxType = "BUY_NOW_PAY_LATER"
-	ParsedTxTypeMemo                    ParsedTxType = "MEMO"
-	ParsedTxTypeSwap                    ParsedTxType = "SWAP"
-	ParsedTxTypeCreatePool              ParsedTxType = "CREATE_POOL"
-	ParsedTxTypeAddLiquidity            ParsedTxType = "ADD_LIQUIDITY"
-	ParsedTxTypeRemoveLiquidity         ParsedTxType = "REMOVE_LIQUIDITY"
-	ParsedTxTypeCollectFees             ParsedTxType = "COLLECT_FEES"
-	ParsedTxTypeCollectReward           ParsedTxType = "COLLECT_REWARD"
-	ParsedTxTypeCreateRaffle            ParsedTxType = "CREATE_RAFFLE"
-	ParsedTxTypeBuyTickets              ParsedTxType = "BUY_TICKETS"
-	ParsedTxTypeRevealWinners           ParsedTxType = "REVEAL_WINNERS"
-	ParsedTxTypeClaimPrize              ParsedTxType = "CLAIM_PRIZE"
-	ParsedTxTypeCloseRaffle             ParsedTxType = "CLOSE_RAFFLE"
-	ParsedTxTypeCancelRaffle            ParsedTxType = "CANCEL_RAFFLE"
-	ParsedTxTypeCreateTree              ParsedTxType = "CREATE_TREE"
-	ParsedTxTypeCompressedNFTMint       ParsedTxType = "COMPRESSED_NFT_MINT"
-	ParsedTxTypeCompressedNFTTransfer   ParsedTxType = "COMPRESSED_NFT_TRANSFER"
-	ParsedTxTypeCompressedNFTBurn       ParsedTxType = "COMPRESSED_NFT_BURN"
-	ParsedTxTypeCreateRealm             ParsedTxType = "CREATE_REALM"
-	ParsedTxTypeDepositGoverningTokens  ParsedTxType = "DEPOSIT_GOVERNING_TOKENS"
-	ParsedTxTypeWithdrawGoverningTokens ParsedTxType = "WITHDRAW_GOVERNING_TOKENS"
-	ParsedTxTypeSetGovernanceDelegate   ParsedTxType = "SET_GOVERNANCE_DELEGATE"
-	ParsedTxTypeCreateGovernance        ParsedTxType = "CREATE_GOVERNANCE"
-	ParsedTxTypeCreateProgramGovernance ParsedTxType = "CREATE_PROGRAM_GOVERNANCE"
-	ParsedTxTypeCreateProposal          ParsedTxType = "CREATE_PROPOSAL"
-	ParsedTxTypeAddSignatory            ParsedTxType = "ADD_SIGNATORY"
-	ParsedTxTypeRemoveSignatory         ParsedTxType = "REMOVE_SIGNATORY"
-	ParsedTxTypeInsertTransaction       ParsedTxType = "INSERT_TRANSACTION"
-	ParsedTxTypeRemoveTransaction       ParsedTxType = "REMOVE_TRANSACTION"
-	ParsedTxTypeCancelProposal          ParsedTxType = "CANCEL_PROPOSAL"
-	ParsedTxTypeSignOffProposal         ParsedTxType = "SIGN_OFF_PROPOSAL"
-	ParsedTxTypeCastVote                ParsedTxType = "CAST_VOTE"
-	ParsedTxTypeFinalizeVote            ParsedTxType = "FINALIZE_VOTE"
-	ParsedTxTypeRelinquishVote          ParsedTxType = "RELINQUISH_VOTE"
-	ParsedTxTypeExecuteTransaction      ParsedTxType = "EXECUTE_TRANSACTION"
-	ParsedTxTypeCreateMintGovernance    ParsedTxType = "CREATE_MINT_GOVERNANCE"
-	ParsedTxTypeCreateTokenGovernance   ParsedTxType = "CREATE_TOKEN_GOVERNANCE"
-	ParsedTxTypeSetGovernanceConfig     ParsedTxType = "SET_GOVERNANCE_CONFIG"
-	ParsedTxTypeSetRealmAuthority       ParsedTxType = "SET_REALM_AUTHORITY"
-	ParsedTxTypeSetRealmConfig          ParsedTxType = "SET_REALM_CONFIG"
-	ParsedTxTypeCreateTokenOwnerRecord  ParsedTxType = "CREATE_TOKEN_OWNER_RECORD"
-	ParsedTxTypePostMessage             ParsedTxType = "POST_MESSAGE"
-)
-
 type CallbackType string
 
 const (
@@ -222,14 +142,14 @@ func (c *Client) CallbackList() ([]CallbackInfo, error) {
 }
 
 type CallbackCreateBody struct {
-	Network      Network        `json:"network"`
-	Addresses    []string       `json:"addresses"`
-	CallbackUrl  string         `json:"callback_url"`
-	Events       []ParsedTxType `json:"events,omitempty"`
-	EnableRaw    bool           `json:"enable_raw,omitempty"`
-	EnableEvents bool           `json:"enable_events,omitempty"`
-	Type         CallbackType   `json:"type,omitempty"`
-	Encoding     Encoding       `json:"encoding,omitempty"`
+	Network      Network      `json:"network"`
+	Addresses    []string     `json:"addresses"`
+	CallbackUrl  string       `json:"callback_url"`
+	Events       []TxType     `json:"events,omitempty"`
+	EnableRaw    bool         `json:"enable_raw,omitempty"`
+	EnableEvents bool         `json:"enable_events,omitempty"`
+	Type         CallbackType `json:"type,omitempty"`
+	Encoding     Encoding     `json:"encoding,omitempty"`
 }
 
 func (c *Client) CreateCallback(body CallbackCreateBody) (CallbackInfo, error) {
