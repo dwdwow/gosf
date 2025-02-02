@@ -2,7 +2,6 @@ package gosf
 
 import (
 	"encoding/json"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -94,6 +93,6 @@ func (s *CallbackServer) Start() error {
 	mux.HandleFunc("/hlaskjdfyreiqwt658-91740agjhs-ldvhjk19asdkvy5", s.handleTest)
 	mux.HandleFunc("/txcallback-hlsfdgj654389127dsfgbhjague", s.handleTxCallback)
 	mux.HandleFunc("/acctcallback-hlsfdgj654389127dsfgbhjague", s.handleAcctCallback)
-	log.Printf("Starting HTTPS callback server on port %s", s.port)
+	s.logger.Info("Starting HTTPS callback server", "port", s.port, "certFile", s.certFile, "keyFile", s.keyFile)
 	return http.ListenAndServeTLS(":"+s.port, s.certFile, s.keyFile, mux)
 }
