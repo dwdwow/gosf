@@ -2,7 +2,6 @@ package gosf
 
 import (
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -69,11 +68,9 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	fmt.Printf("%+v\n", tx)
-
 	select {
 	case s.txCh <- tx:
-		// s.logger.Info("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "tx", tx)
+		s.logger.Info("send tx to channel")
 	default:
 		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
 	}

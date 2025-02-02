@@ -1,6 +1,7 @@
 package gosf_test
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
@@ -20,9 +21,9 @@ func TestCallbackServer(t *testing.T) {
 	for {
 		select {
 		case acct := <-sv.GetAcctChannel():
-			t.Logf("%+v", acct)
+			fmt.Printf("%+v\n", acct)
 		case tx := <-sv.GetTxChannel():
-			t.Logf("%+v", tx)
+			fmt.Printf("%+v\n", tx)
 		}
 	}
 }
