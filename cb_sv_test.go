@@ -14,4 +14,5 @@ func TestCallbackServer(t *testing.T) {
 	}
 	sv := gosf.NewCallbackServer("8443", homeDir+"/certs/certificate.pem", homeDir+"/certs/private.key", nil)
 	sv.Start()
+	select {}
 }
