@@ -2,6 +2,7 @@ package gosf
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -67,6 +68,8 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Invalid request body", "error", err)
 		return
 	}
+
+	fmt.Printf("%+v\n", tx)
 
 	select {
 	case s.txCh <- tx:
