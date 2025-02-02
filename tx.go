@@ -16,10 +16,12 @@ type TxTokenBalanceChange struct {
 	Address      string  `json:"address" bson:"address"`
 	Decimals     int64   `json:"decimals" bson:"decimals"`
 	ChangeAmount float64 `json:"change_amount" bson:"change_amount"`
-	PostBalance  int64   `json:"post_balance" bson:"post_balance"`
-	PreBalance   int64   `json:"pre_balance" bson:"pre_balance"`
-	Mint         string  `json:"mint" bson:"mint"`
-	Owner        string  `json:"owner" bson:"owner"`
+	// PostBalance is int, but may be big, so use float64
+	PostBalance float64 `json:"post_balance" bson:"post_balance"`
+	// PreBalance is int, but may be big, so use float64
+	PreBalance float64 `json:"pre_balance" bson:"pre_balance"`
+	Mint       string  `json:"mint" bson:"mint"`
+	Owner      string  `json:"owner" bson:"owner"`
 }
 
 type TxAccountData struct {
@@ -30,17 +32,19 @@ type TxAccountData struct {
 }
 
 type TxRawMeta struct {
-	ComputeUnitsConsumed int64          `json:"computeUnitsConsumed" bson:"computeUnitsConsumed"`
-	Err                  any            `json:"err" bson:"err"`
-	Fee                  int64          `json:"fee" bson:"fee"`
-	InnerInstructions    []any          `json:"innerInstructions" bson:"innerInstructions"`
-	LogMessages          []string       `json:"logMessages" bson:"logMessages"`
-	PostBalances         []int64        `json:"postBalances" bson:"postBalances"`
-	PostTokenBalances    []any          `json:"postTokenBalances" bson:"postTokenBalances"`
-	PreBalances          []int64        `json:"preBalances" bson:"preBalances"`
-	PreTokenBalances     []any          `json:"preTokenBalances" bson:"preTokenBalances"`
-	Rewards              []any          `json:"rewards" bson:"rewards"`
-	Status               map[string]any `json:"status" bson:"status"`
+	ComputeUnitsConsumed int64    `json:"computeUnitsConsumed" bson:"computeUnitsConsumed"`
+	Err                  any      `json:"err" bson:"err"`
+	Fee                  int64    `json:"fee" bson:"fee"`
+	InnerInstructions    []any    `json:"innerInstructions" bson:"innerInstructions"`
+	LogMessages          []string `json:"logMessages" bson:"logMessages"`
+	// PostBalances is int, but may be big, so use float64
+	PostBalances      []float64 `json:"postBalances" bson:"postBalances"`
+	PostTokenBalances []any     `json:"postTokenBalances" bson:"postTokenBalances"`
+	// PreBalances is int, but may be big, so use float64
+	PreBalances      []float64      `json:"preBalances" bson:"preBalances"`
+	PreTokenBalances []any          `json:"preTokenBalances" bson:"preTokenBalances"`
+	Rewards          []any          `json:"rewards" bson:"rewards"`
+	Status           map[string]any `json:"status" bson:"status"`
 }
 
 type TxAccountKey struct {
