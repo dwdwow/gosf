@@ -14,5 +14,12 @@ func TestCallbackServer(t *testing.T) {
 	}
 	sv := gosf.NewCallbackServer("8443", homeDir+"/certs/certificate.crt", homeDir+"/certs/private.key", nil)
 	sv.Start()
-	select {}
+	for {
+		select {
+		case acct := <-sv.GetAcctChannel():
+			t.Logf("%+v", acct)
+		case tx := <-sv.GetTxChannel():
+			t.Logf("%+v", tx)
+		}
+	}
 }

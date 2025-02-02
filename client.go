@@ -2,6 +2,7 @@ package gosf
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -157,6 +158,9 @@ type Client struct {
 }
 
 func NewClient(apiKey string, apiLimiter *golimiter.ReqLimiter, rpcLimiter *golimiter.ReqLimiter) *Client {
+	if apiKey == "" {
+		panic("shyft: apiKey is required")
+	}
 	return &Client{
 		apiLimiter: apiLimiter,
 		rpcLimiter: rpcLimiter,
@@ -167,12 +171,14 @@ func NewClient(apiKey string, apiLimiter *golimiter.ReqLimiter, rpcLimiter *goli
 
 func (c *Client) newApiHeader() http.Header {
 	header := http.Header{}
-	header.Set("X-API-KEY", c.apiKey)
-	header.Set("Content-Type", "application/json")
+	header.Set("x-api-key", c.apiKey)
 	return header
 }
 
-func req[D any](url, method string, header http.Header, body any) (D, error) {
+func req[D any](limiter *golimiter.ReqLimiter, url, method string, header http.Header, body any) (D, error) {
+	if limiter != nil {
+		limiter.Wait(context.Background())
+	}
 	jsonBody, err := json.Marshal(body)
 	if err != nil {
 		return *new(D), err
@@ -182,6 +188,8 @@ func req[D any](url, method string, header http.Header, body any) (D, error) {
 		return *new(D), err
 	}
 	req.Header = header
+
+	fmt.Println(req.URL.String())
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -203,7 +211,7 @@ func req[D any](url, method string, header http.Header, body any) (D, error) {
 }
 
 func (c *Client) CallbackList() ([]CallbackInfo, error) {
-	return req[[]CallbackInfo](API_BASE_URL+"/sol/v1/callback/list", "GET", c.newApiHeader(), nil)
+	return req[[]CallbackInfo](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/list", "GET", c.newApiHeader(), nil)
 }
 
 type CallbackCreateBody struct {
@@ -218,21 +226,21 @@ type CallbackCreateBody struct {
 }
 
 func (c *Client) CreateCallback(body CallbackCreateBody) (CallbackInfo, error) {
-	return req[CallbackInfo](API_BASE_URL+"/sol/v1/callback/create", "POST", c.newApiHeader(), body)
+	return req[CallbackInfo](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/create", "POST", c.newApiHeader(), body)
 }
 
 func (c *Client) RemoveCallback(id string) error {
-	_, err := req[map[string]string](API_BASE_URL+"/sol/v1/callback/remove", "DELETE", c.newApiHeader(), map[string]string{"id": id})
+	_, err := req[map[string]string](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/remove", "DELETE", c.newApiHeader(), map[string]string{"id": id})
 	return err
 }
 
 func (c *Client) PauseCallback(id string) error {
-	_, err := req[map[string]string](API_BASE_URL+"/sol/v1/callback/pause", "POST", c.newApiHeader(), map[string]string{"id": id})
+	_, err := req[map[string]string](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/pause", "POST", c.newApiHeader(), map[string]string{"id": id})
 	return err
 }
 
 func (c *Client) ResumeCallback(id string) error {
-	_, err := req[map[string]string](API_BASE_URL+"/sol/v1/callback/resume", "POST", c.newApiHeader(), map[string]string{"id": id})
+	_, err := req[map[string]string](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/resume", "POST", c.newApiHeader(), map[string]string{"id": id})
 	return err
 }
 
@@ -247,18 +255,18 @@ type CallbackUpdateBody struct {
 }
 
 func (c *Client) UpdateCallback(body CallbackUpdateBody) (CallbackInfo, error) {
-	return req[CallbackInfo](API_BASE_URL+"/sol/v1/callback/update", "POST", c.newApiHeader(), body)
+	return req[CallbackInfo](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/update", "POST", c.newApiHeader(), body)
 }
 
 func (c *Client) AddCallbackAddresses(id string, addresses []string) (CallbackInfo, error) {
-	return req[CallbackInfo](API_BASE_URL+"/sol/v1/callback/add-addresses", "POST", c.newApiHeader(), map[string]any{
+	return req[CallbackInfo](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/add-addresses", "POST", c.newApiHeader(), map[string]any{
 		"id":        id,
 		"addresses": addresses,
 	})
 }
 
 func (c *Client) RemoveCallbackAddresses(id string, addresses []string) (CallbackInfo, error) {
-	return req[CallbackInfo](API_BASE_URL+"/sol/v1/callback/remove-addresses", "POST", c.newApiHeader(), map[string]any{
+	return req[CallbackInfo](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/remove-addresses", "POST", c.newApiHeader(), map[string]any{
 		"id":        id,
 		"addresses": addresses,
 	})
