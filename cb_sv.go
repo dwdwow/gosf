@@ -2,6 +2,8 @@ package gosf
 
 import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -62,21 +64,29 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	var tx CBTx
-	if err := json.NewDecoder(r.Body).Decode(&tx); err != nil {
-		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Invalid request body", "error", err)
+	b, err := io.ReadAll(r.Body)
+	if err != nil {
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Failed to read request body", "error", err)
 		return
 	}
 
-	if tx.Timestamp == "" {
-		return
-	}
+	fmt.Println(string(b))
 
-	select {
-	case s.txCh <- tx:
-	default:
-		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
-	}
+	// var tx CBTx
+	// if err := json.NewDecoder(r.Body).Decode(&tx); err != nil {
+	// 	s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Invalid request body", "error", err)
+	// 	return
+	// }
+
+	// if tx.Timestamp == "" {
+	// 	return
+	// }
+
+	// select {
+	// case s.txCh <- tx:
+	// default:
+	// 	s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
+	// }
 }
 
 func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Request) {
