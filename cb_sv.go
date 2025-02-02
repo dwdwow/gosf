@@ -7,6 +7,11 @@ import (
 	"os"
 )
 
+const (
+	CB_SERVER_TX_CALLBACK_PATH   = "/txcallback-hlsfdgj654389127dsfgbhjague"
+	CB_SERVER_ACCT_CALLBACK_PATH = "/acctcallback-hlsfdgj654389127dsfgbhjague"
+)
+
 type CallbackServer struct {
 	port     string
 	certFile string
@@ -91,8 +96,8 @@ func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Reque
 func (s *CallbackServer) Start() error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/hlaskjdfyreiqwt658-91740agjhs-ldvhjk19asdkvy5", s.handleTest)
-	mux.HandleFunc("/txcallback-hlsfdgj654389127dsfgbhjague", s.handleTxCallback)
-	mux.HandleFunc("/acctcallback-hlsfdgj654389127dsfgbhjague", s.handleAcctCallback)
+	mux.HandleFunc(CB_SERVER_TX_CALLBACK_PATH, s.handleTxCallback)
+	mux.HandleFunc(CB_SERVER_ACCT_CALLBACK_PATH, s.handleAcctCallback)
 	s.logger.Info("Starting HTTPS callback server", "port", s.port, "certFile", s.certFile, "keyFile", s.keyFile)
 	return http.ListenAndServeTLS(":"+s.port, s.certFile, s.keyFile, mux)
 }
