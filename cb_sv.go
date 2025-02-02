@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"sync"
 )
 
 const (
@@ -49,6 +50,9 @@ func (s *CallbackServer) handleTest(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Hello, World!"))
 }
 
+var mu sync.Mutex
+var sigs = make(map[string]bool)
+
 func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request) {
 	s.logger.Info("tx callback request", "method", r.Method, "ip", r.RemoteAddr)
 	w.WriteHeader(http.StatusOK)
@@ -75,6 +79,16 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 	if err := ParseTxActions(&tx); err != nil {
 		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Failed to parse tx actions", "error", err)
 		return
+	}
+
+	mu.Lock()
+	defer mu.Unlock()
+	for _, sig := range tx.Signatures {
+		if sigs[sig] {
+			s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Duplicate signature", "signature", sig)
+			return
+		}
+		sigs[sig] = true
 	}
 
 	// select {

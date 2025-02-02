@@ -1,5 +1,11 @@
 package gosf
 
+type TxStatus string
+
+const (
+	TxStatusSuccess TxStatus = "Success"
+)
+
 type TxProtocol struct {
 	Address string `json:"address" bson:"address"`
 	Name    string `json:"name" bson:"name"`
@@ -110,7 +116,7 @@ type Tx struct {
 	Signatures          []string               `json:"signatures" bson:"signatures"`
 	Protocol            TxProtocol             `json:"protocol" bson:"protocol"`
 	Type                TxType                 `json:"type" bson:"type"`
-	Status              string                 `json:"status" bson:"status"`
+	Status              TxStatus               `json:"status" bson:"status"`
 	Actions             []TxAction             `json:"actions" bson:"actions"`
 	Raw                 TxRawTransaction       `json:"raw" bson:"raw"`
 	Accounts            []TxAccountData        `json:"accounts" bson:"accounts"`
