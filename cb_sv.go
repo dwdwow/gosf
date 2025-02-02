@@ -68,6 +68,10 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	if tx.Timestamp == "" {
+		return
+	}
+
 	select {
 	case s.txCh <- tx:
 	default:
@@ -77,23 +81,31 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 
 func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Request) {
 	s.logger.Info("acct callback request", "method", r.Method, "ip", r.RemoteAddr)
+	w.WriteHeader(http.StatusOK)
+	_, err := w.Write([]byte("\n"))
+	if err != nil {
+		s.logger.Error("acct callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Failed to write response", "error", err)
+	}
 
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		s.logger.Error("acct callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Method not allowed")
 		return
 	}
 
 	var acct CBAcct
 	if err := json.NewDecoder(r.Body).Decode(&acct); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		s.logger.Error("acct callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Invalid request body", "error", err)
+		return
+	}
+
+	if acct.Account == "" {
 		return
 	}
 
 	select {
 	case s.acctCh <- acct:
-		w.WriteHeader(http.StatusOK)
 	default:
-		http.Error(w, "Channel full", http.StatusServiceUnavailable)
+		s.logger.Error("acct callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
 	}
 }
 
