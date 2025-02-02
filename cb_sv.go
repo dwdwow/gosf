@@ -77,11 +77,11 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	select {
-	case s.txCh <- tx:
-	default:
-		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
-	}
+	// select {
+	// case s.txCh <- tx:
+	// default:
+	// 	s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
+	// }
 }
 
 func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Request) {
