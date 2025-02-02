@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/dwdwow/gosf"
 )
@@ -21,9 +22,9 @@ func TestCallbackServer(t *testing.T) {
 	for {
 		select {
 		case acct := <-sv.GetAcctChannel():
-			fmt.Printf("%+v\n", acct)
+			fmt.Printf("%s %+v\n", time.Now().Format(time.RFC3339), acct)
 		case tx := <-sv.GetTxChannel():
-			fmt.Printf("%+v\n", tx)
+			fmt.Printf("%s %+v\n", time.Now().Format(time.RFC3339), tx)
 		}
 	}
 }
