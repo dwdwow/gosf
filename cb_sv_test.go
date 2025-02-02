@@ -13,7 +13,10 @@ func TestCallbackServer(t *testing.T) {
 		t.Fatal(err)
 	}
 	sv := gosf.NewCallbackServer("8443", homeDir+"/certs/certificate.crt", homeDir+"/certs/private.key", nil)
-	sv.HTTPServe()
+	err = sv.HTTPServe()
+	if err != nil {
+		t.Fatal(err)
+	}
 	for {
 		select {
 		case acct := <-sv.GetAcctChannel():

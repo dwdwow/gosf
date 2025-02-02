@@ -21,7 +21,7 @@ func TestClientCreateCallback(t *testing.T) {
 	callback, err := client.CreateCallback(gosf.CallbackCreateBody{
 		Network:     gosf.NetworkMainnetBeta,
 		Addresses:   []string{"JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"},
-		CallbackUrl: "https://52.199.6.58:8443" + gosf.CB_SERVER_TX_CALLBACK_PATH,
+		CallbackUrl: "http://52.199.6.58:8443" + gosf.CB_SERVER_TX_CALLBACK_PATH,
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -31,7 +31,7 @@ func TestClientCreateCallback(t *testing.T) {
 
 func TestClientRemoveCallback(t *testing.T) {
 	client := gosf.NewClient(os.Getenv("SHYFT_API_KEY"), nil, nil)
-	err := client.RemoveCallback("679f543afa5c359563ffd1f2")
+	err := client.RemoveCallback("679f55c9f92abb026b212dea")
 	if err != nil {
 		t.Fatal(err)
 	}

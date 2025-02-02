@@ -51,23 +51,28 @@ func (s *CallbackServer) handleTest(w http.ResponseWriter, r *http.Request) {
 
 func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request) {
 	s.logger.Info("tx callback request", "method", r.Method, "ip", r.RemoteAddr)
+	w.WriteHeader(http.StatusOK)
+	_, err := w.Write([]byte("\n"))
+	if err != nil {
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Failed to write response", "error", err)
+	}
 
 	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Method not allowed")
 		return
 	}
 
 	var tx CBTx
 	if err := json.NewDecoder(r.Body).Decode(&tx); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Invalid request body", "error", err)
 		return
 	}
 
 	select {
 	case s.txCh <- tx:
-		w.WriteHeader(http.StatusOK)
+		// s.logger.Info("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "tx", tx)
 	default:
-		http.Error(w, "Channel full", http.StatusServiceUnavailable)
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
 	}
 }
 
