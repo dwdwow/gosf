@@ -12,7 +12,7 @@ func TestCallbackServer(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	sv := gosf.NewCallbackServer("8443", homeDir+"/certs/certificate.pem", homeDir+"/certs/private.key", nil)
+	sv := gosf.NewCallbackServer("8443", homeDir+"/certs/certificate.crt", homeDir+"/certs/private.key", nil)
 	sv.Start()
 	select {}
 }
