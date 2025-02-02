@@ -70,7 +70,6 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 
 	select {
 	case s.txCh <- tx:
-		s.logger.Info("send tx to channel")
 	default:
 		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Channel full")
 	}
@@ -98,11 +97,17 @@ func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (s *CallbackServer) HTTPServe() error {
+func (s *CallbackServer) StartHTTPServer() error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/hlaskjdfyreiqwt658-91740agjhs-ldvhjk19asdkvy5", s.handleTest)
 	mux.HandleFunc(CB_SERVER_TX_CALLBACK_PATH, s.handleTxCallback)
 	mux.HandleFunc(CB_SERVER_ACCT_CALLBACK_PATH, s.handleAcctCallback)
 	s.logger.Info("Starting HTTPS callback server", "port", s.port, "certFile", s.certFile, "keyFile", s.keyFile)
-	return http.ListenAndServe(":"+s.port, mux)
+	go func() {
+		err := http.ListenAndServe(":"+s.port, mux)
+		if err != nil {
+			s.logger.Error("Failed to start HTTPS callback server", "error", err)
+		}
+	}()
+	return nil
 }

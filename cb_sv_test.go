@@ -14,7 +14,7 @@ func TestCallbackServer(t *testing.T) {
 		t.Fatal(err)
 	}
 	sv := gosf.NewCallbackServer("8443", homeDir+"/certs/certificate.crt", homeDir+"/certs/private.key", nil)
-	err = sv.HTTPServe()
+	err = sv.StartHTTPServer()
 	if err != nil {
 		t.Fatal(err)
 	}
