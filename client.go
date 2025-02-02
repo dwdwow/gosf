@@ -218,7 +218,7 @@ func req[D any](limiter *golimiter.ReqLimiter, url, method string, header http.H
 }
 
 func (c *Client) CallbackList() ([]CallbackInfo, error) {
-	return req[[]CallbackInfo](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/list", "GET", c.newPostApiHeader(), nil)
+	return req[[]CallbackInfo](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/list", "GET", c.newGetApiHeader(), nil)
 }
 
 type CallbackCreateBody struct {
@@ -233,11 +233,11 @@ type CallbackCreateBody struct {
 }
 
 func (c *Client) CreateCallback(body CallbackCreateBody) (CallbackInfo, error) {
-	return req[CallbackInfo](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/create", "POST", c.newGetApiHeader(), body)
+	return req[CallbackInfo](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/create", "POST", c.newPostApiHeader(), body)
 }
 
 func (c *Client) RemoveCallback(id string) error {
-	_, err := req[map[string]string](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/remove", "DELETE", c.newGetApiHeader(), map[string]string{"id": id})
+	_, err := req[map[string]string](c.apiLimiter, API_BASE_URL+"/sol/v1/callback/remove", "DELETE", c.newPostApiHeader(), map[string]string{"id": id})
 	return err
 }
 

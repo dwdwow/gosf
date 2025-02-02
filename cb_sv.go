@@ -93,11 +93,11 @@ func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Reque
 	}
 }
 
-func (s *CallbackServer) Start() error {
+func (s *CallbackServer) HTTPServe() error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/hlaskjdfyreiqwt658-91740agjhs-ldvhjk19asdkvy5", s.handleTest)
 	mux.HandleFunc(CB_SERVER_TX_CALLBACK_PATH, s.handleTxCallback)
 	mux.HandleFunc(CB_SERVER_ACCT_CALLBACK_PATH, s.handleAcctCallback)
 	s.logger.Info("Starting HTTPS callback server", "port", s.port, "certFile", s.certFile, "keyFile", s.keyFile)
-	return http.ListenAndServeTLS(":"+s.port, s.certFile, s.keyFile, mux)
+	return http.ListenAndServe(":"+s.port, mux)
 }

@@ -28,3 +28,11 @@ func TestClientCreateCallback(t *testing.T) {
 	}
 	t.Logf("%+v", callback)
 }
+
+func TestClientRemoveCallback(t *testing.T) {
+	client := gosf.NewClient(os.Getenv("SHYFT_API_KEY"), nil, nil)
+	err := client.RemoveCallback("679f543afa5c359563ffd1f2")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
