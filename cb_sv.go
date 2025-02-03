@@ -52,6 +52,14 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Failed to read body", "error", err)
 		return
 	}
+	if len(bytes) == 0 {
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Body is empty")
+		return
+	}
+	if string(bytes) == "{}" {
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Body is empty")
+		return
+	}
 	s.txWs.Broadcast(bytes)
 }
 
@@ -64,6 +72,14 @@ func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Reque
 	bytes, err := io.ReadAll(r.Body)
 	if err != nil {
 		s.logger.Error("acct callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Failed to read body", "error", err)
+		return
+	}
+	if len(bytes) == 0 {
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Body is empty")
+		return
+	}
+	if string(bytes) == "{}" {
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Body is empty")
 		return
 	}
 	s.acctWs.Broadcast(bytes)
