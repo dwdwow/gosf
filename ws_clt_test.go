@@ -7,7 +7,8 @@ import (
 )
 
 func TestWsClient(t *testing.T) {
-	clt := gosf.NewWsClient("ws://localhost:8442", nil)
+	handler := gosf.NewSimpleWsMsgHandler(nil)
+	clt := gosf.NewWsClient("ws://localhost:8442", handler, nil)
 	err := clt.Start()
 	if err != nil {
 		t.Fatal(err)
