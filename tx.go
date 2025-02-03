@@ -118,7 +118,7 @@ type Tx struct {
 	Type                TxType                 `json:"type" bson:"type"`
 	Status              TxStatus               `json:"status" bson:"status"`
 	Actions             []TxAction             `json:"actions" bson:"actions"`
-	Raw                 TxRawTransaction       `json:"raw" bson:"raw"`
+	Raw                 *TxRawTransaction      `json:"raw,omitempty" bson:"raw,omitempty"`
 	Accounts            []TxAccountData        `json:"accounts" bson:"accounts"`
 	TokenBalanceChanges []TxTokenBalanceChange `json:"token_balance_changes" bson:"token_balance_changes"`
 	TriggeredFor        string                 `json:"triggered_for" bson:"triggered_for"`

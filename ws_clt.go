@@ -124,12 +124,12 @@ func (h *SimpleWsMsgHandler) Handle(msg []byte) {
 			return
 		}
 	}
-	n := time.Now()
-	t, err := time.Parse(time.RFC3339Nano, tx.Timestamp)
-	if err != nil {
-		h.logger.Error("ws message", "raw", tx.Timestamp, "error", err)
-		panic(1)
-	}
-	du := n.Sub(t)
-	fmt.Println(du)
+	// n := time.Now()
+	// t, err := time.Parse(time.RFC3339Nano, tx.Timestamp)
+	// if err != nil {
+	// 	h.logger.Error("ws message", "raw", tx.Timestamp, "error", err)
+	// 	panic(1)
+	// }
+	// du := n.Sub(t)
+	fmt.Println(tx.Protocol.Name)
 }
