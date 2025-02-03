@@ -122,8 +122,6 @@ func req[D any](limiter *golimiter.ReqLimiter, url, method string, header http.H
 	}
 	req.Header = header
 
-	fmt.Println(req.URL.String())
-
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return *new(D), err
