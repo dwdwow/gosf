@@ -28,9 +28,6 @@ type SimpleWSServer struct {
 	ctx    context.Context
 	cancel context.CancelFunc
 
-	// mux for the server
-	mux sync.Mutex
-
 	// logger for logging
 	logger *slog.Logger
 }
@@ -122,15 +119,12 @@ func (s *SimpleWSServer) handleBroadcast() {
 			// Send it to every client
 			s.mu.RLock()
 			for client := range s.clients {
-				client := client
-				go func() {
-					err := client.WriteMessage(websocket.TextMessage, msg)
-					if err != nil {
-						s.logger.Error("ws broadcast", "error", "Failed to write message", "error", err)
-						client.Close()
-						delete(s.clients, client)
-					}
-				}()
+				err := client.WriteMessage(websocket.TextMessage, msg)
+				if err != nil {
+					s.logger.Error("ws broadcast", "error", "Failed to write message", "error", err)
+					client.Close()
+					delete(s.clients, client)
+				}
 			}
 			s.mu.RUnlock()
 		}
@@ -139,8 +133,6 @@ func (s *SimpleWSServer) handleBroadcast() {
 
 // Broadcast sends a message to all connected clients
 func (s *SimpleWSServer) Broadcast(msg []byte) {
-	s.mux.Lock()
-	defer s.mux.Unlock()
 	select {
 	case s.broadcast <- msg:
 	default:
