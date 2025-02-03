@@ -109,7 +109,11 @@ func (h *SimpleWsMsgHandler) Handle(msg []byte) {
 	var tx Tx
 	err := json.Unmarshal(msg, &tx)
 	if err != nil {
-		h.logger.Error("ws message", "error", "Failed to unmarshal message", "error", err)
+		h.logger.Error("ws message", "raw", string(msg), "error", err)
+		return
+	}
+	if tx.Timestamp == "" {
+		h.logger.Error("ws message", "raw", string(msg), "error", "timestamp is empty")
 		return
 	}
 	for _, sig := range tx.Signatures {
