@@ -131,5 +131,7 @@ func (h *SimpleWsMsgHandler) Handle(msg []byte) {
 	// 	panic(1)
 	// }
 	// du := n.Sub(t)
-	fmt.Println(tx.Protocol.Address, tx.Protocol.Name)
+	if tx.Protocol.Name == "" {
+		fmt.Println(tx.Signatures)
+	}
 }
