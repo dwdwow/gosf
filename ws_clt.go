@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"os"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -67,8 +68,29 @@ func (c *WsClient) listener() {
 
 type SimpleWsMsgHandler struct {
 	mux    sync.Mutex
-	sigs   map[string]Tx
+	sigChk *SigChecker
 	logger *slog.Logger
+}
+
+type SigChecker struct {
+	mux  sync.Mutex
+	sigs map[string]bool
+}
+
+func (c *SigChecker) IsExist(sig string) bool {
+	c.mux.Lock()
+	defer c.mux.Unlock()
+	if c.sigs[sig] {
+		return true
+	}
+	c.sigs[sig] = true
+	go func() {
+		time.Sleep(10 * time.Second)
+		c.mux.Lock()
+		defer c.mux.Unlock()
+		delete(c.sigs, sig)
+	}()
+	return false
 }
 
 func NewSimpleWsMsgHandler(logger *slog.Logger) *SimpleWsMsgHandler {
@@ -76,7 +98,9 @@ func NewSimpleWsMsgHandler(logger *slog.Logger) *SimpleWsMsgHandler {
 		logger = slog.New(slog.NewTextHandler(os.Stdout, nil))
 	}
 	return &SimpleWsMsgHandler{
-		sigs:   make(map[string]Tx),
+		sigChk: &SigChecker{
+			sigs: make(map[string]bool),
+		},
 		logger: logger,
 	}
 }
@@ -88,14 +112,18 @@ func (h *SimpleWsMsgHandler) Handle(msg []byte) {
 		h.logger.Error("ws message", "error", "Failed to unmarshal message", "error", err)
 		return
 	}
-	h.mux.Lock()
-	defer h.mux.Unlock()
 	for _, sig := range tx.Signatures {
-		if t, ok := h.sigs[sig]; ok {
-			fmt.Printf("%+v\n", tx)
-			fmt.Printf("%+v\n", t)
-			panic(1)
+		if h.sigChk.IsExist(sig) {
+			return
 		}
-		h.sigs[sig] = tx
 	}
+	n := time.Now()
+	t, err := time.Parse(time.RFC3339Nano, tx.Timestamp)
+	if err != nil {
+		h.logger.Error("ws message", "error", "Failed to parse timestamp", "error", err)
+		panic(1)
+		return
+	}
+	du := n.Sub(t)
+	fmt.Println(du)
 }
