@@ -131,7 +131,8 @@ func (h *SimpleWsMsgHandler) Handle(msg []byte) {
 	// 	panic(1)
 	// }
 	// du := n.Sub(t)
-	if tx.Protocol.Name == "" {
-		fmt.Printf("%+v\n", tx)
-	}
+	// if tx.Protocol.Name == "" {
+	// 	fmt.Printf("%+v\n", tx)
+	// }
+	fmt.Println(tx.Timestamp)
 }
