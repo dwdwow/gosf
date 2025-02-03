@@ -24,7 +24,7 @@ func TestClientCreateCallback(t *testing.T) {
 			"JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
 			// "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
 		},
-		CallbackUrl: "http://52.199.6.58:8443" + gosf.CB_SERVER_TX_CALLBACK_PATH,
+		CallbackUrl: "http://:8443" + gosf.CB_SERVER_TX_CALLBACK_PATH,
 	})
 	if err != nil {
 		t.Fatal(err)
