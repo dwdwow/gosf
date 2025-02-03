@@ -79,7 +79,7 @@ func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	if string(bytes) == "{}" {
-		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Body is empty")
+		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Body is {}")
 		return
 	}
 	s.acctWs.Broadcast(bytes)
