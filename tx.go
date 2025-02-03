@@ -13,19 +13,19 @@ type TxProtocol struct {
 
 type TxAction struct {
 	Info           any        `json:"info" bson:"info"`
-	SourceProtocol TxProtocol `json:"source_protocol" bson:"source_protocol"`
+	SourceProtocol TxProtocol `json:"source_protocol" bson:"sourceProtocol"`
 	Type           TxType     `json:"type" bson:"type"`
-	IxIndex        int64      `json:"ix_index" bson:"ix_index"`
+	IxIndex        int64      `json:"ix_index" bson:"ixIndex"`
 }
 
 type TxTokenBalanceChange struct {
 	Address      string  `json:"address" bson:"address"`
 	Decimals     int64   `json:"decimals" bson:"decimals"`
-	ChangeAmount float64 `json:"change_amount" bson:"change_amount"`
+	ChangeAmount float64 `json:"change_amount" bson:"changeAmount"`
 	// PostBalance is int, but may be big, so use float64
-	PostBalance float64 `json:"post_balance" bson:"post_balance"`
+	PostBalance float64 `json:"post_balance" bson:"postBalance"`
 	// PreBalance is int, but may be big, so use float64
-	PreBalance float64 `json:"pre_balance" bson:"pre_balance"`
+	PreBalance float64 `json:"pre_balance" bson:"preBalance"`
 	Mint       string  `json:"mint" bson:"mint"`
 	Owner      string  `json:"owner" bson:"owner"`
 }
@@ -90,7 +90,7 @@ type TxTransaction struct {
 type TxParsed struct {
 	Timestamp  string     `json:"timestamp" bson:"timestamp"`
 	Fee        float64    `json:"fee" bson:"fee"`
-	FeePayer   string     `json:"fee_payer" bson:"fee_payer"`
+	FeePayer   string     `json:"fee_payer" bson:"feePayer"`
 	Signers    []string   `json:"signers" bson:"signers"`
 	Signatures []string   `json:"signatures" bson:"signatures"`
 	Protocol   TxProtocol `json:"protocol" bson:"protocol"`
@@ -109,9 +109,10 @@ type TxRawTransaction struct {
 }
 
 type Tx struct {
+	TsMilli             int64                  `json:"ts_milli" bson:"tsMilli"`
 	Timestamp           string                 `json:"timestamp" bson:"timestamp"`
 	Fee                 float64                `json:"fee" bson:"fee"`
-	FeePayer            string                 `json:"fee_payer" bson:"fee_payer"`
+	FeePayer            string                 `json:"fee_payer" bson:"feePayer"`
 	Signers             []string               `json:"signers" bson:"signers"`
 	Signatures          []string               `json:"signatures" bson:"signatures"`
 	Protocol            TxProtocol             `json:"protocol" bson:"protocol"`
@@ -120,6 +121,6 @@ type Tx struct {
 	Actions             []TxAction             `json:"actions" bson:"actions"`
 	Raw                 *TxRawTransaction      `json:"raw,omitempty" bson:"raw,omitempty"`
 	Accounts            []TxAccountData        `json:"accounts" bson:"accounts"`
-	TokenBalanceChanges []TxTokenBalanceChange `json:"token_balance_changes" bson:"token_balance_changes"`
-	TriggeredFor        string                 `json:"triggered_for" bson:"triggered_for"`
+	TokenBalanceChanges []TxTokenBalanceChange `json:"token_balance_changes" bson:"tokenBalanceChanges"`
+	TriggeredFor        string                 `json:"triggered_for" bson:"triggeredFor"`
 }
