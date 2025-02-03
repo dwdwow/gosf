@@ -66,6 +66,12 @@ type CallbackInfo struct {
 	Network     string   `json:"network"`
 	Addresses   []string `json:"addresses"`
 	APIKey      string   `json:"api_key"`
+	Type        string   `json:"type"`
+	Encoding    Encoding `json:"encoding"`
+	Active      bool     `json:"active"`
+	CreatedAt   string   `json:"created_at"`
+	UpdatedAt   string   `json:"updated_at"`
+	V           int64    `json:"__v"`
 }
 
 type Client struct {
@@ -123,6 +129,14 @@ func req[D any](limiter *golimiter.ReqLimiter, url, method string, header http.H
 		return *new(D), err
 	}
 	defer resp.Body.Close()
+
+	// bs, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	return *new(D), err
+	// }
+	// fmt.Println(string(bs))
+
+	// return *new(D), nil
 
 	var d RespData[D]
 	err = json.NewDecoder(resp.Body).Decode(&d)
