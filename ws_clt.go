@@ -132,6 +132,6 @@ func (h *SimpleWsMsgHandler) Handle(msg []byte) {
 	// }
 	// du := n.Sub(t)
 	if tx.Protocol.Name == "" {
-		fmt.Println(tx.Signatures)
+		fmt.Printf("%+v\n", tx)
 	}
 }
