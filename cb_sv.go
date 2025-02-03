@@ -42,8 +42,7 @@ func (s *CallbackServer) handleTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request) {
-	s.logger.Info("tx callback request", "method", r.Method, "ip", r.RemoteAddr)
-
+	// s.logger.Info("tx callback request", "method", r.Method, "ip", r.RemoteAddr)
 	if r.Method != http.MethodPost {
 		s.logger.Error("tx callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Method not allowed")
 		return
@@ -57,7 +56,7 @@ func (s *CallbackServer) handleTxCallback(w http.ResponseWriter, r *http.Request
 }
 
 func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Request) {
-	s.logger.Info("acct callback request", "method", r.Method, "ip", r.RemoteAddr)
+	// s.logger.Info("acct callback request", "method", r.Method, "ip", r.RemoteAddr)
 	if r.Method != http.MethodPost {
 		s.logger.Error("acct callback request", "method", r.Method, "ip", r.RemoteAddr, "error", "Method not allowed")
 		return
