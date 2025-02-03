@@ -34,7 +34,7 @@ func TestClientCreateCallback(t *testing.T) {
 
 func TestClientRemoveCallback(t *testing.T) {
 	client := gosf.NewClient(os.Getenv("SHYFT_API_KEY"), nil, nil)
-	err := client.RemoveCallback("679f6e515c51ef30ab7d63d0")
+	err := client.RemoveCallback("67a08fbe7457e5ddd7919276")
 	if err != nil {
 		t.Fatal(err)
 	}
