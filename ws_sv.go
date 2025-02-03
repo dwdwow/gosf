@@ -58,14 +58,11 @@ func (s *SimpleWSServer) Serve(path string) {
 	// Start the broadcast handler
 	go s.handleBroadcast()
 
-	// Set up the HTTP handler for WebSocket connections
-	http.HandleFunc(path, s.handleConnections)
-
-	// Start the server
-	s.logger.Info("WebSocket server starting on port", "port", s.port)
-
 	go func() {
-		err := http.ListenAndServe(":"+s.port, nil)
+		mux := http.NewServeMux()
+		mux.HandleFunc(path, s.handleConnections)
+		s.logger.Info("WebSocket server starting on port", "port", s.port)
+		err := http.ListenAndServe(":"+s.port, mux)
 		if err != nil {
 			s.logger.Error("ws server", "error", "Failed to listen and serve", "error", err)
 		}

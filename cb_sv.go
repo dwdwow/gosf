@@ -71,13 +71,14 @@ func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Reque
 }
 
 func (s *CallbackServer) Serve() {
-	s.txWs.Serve("/ws")
-	s.acctWs.Serve("/ws")
-	http.HandleFunc(CB_SERVER_TEST_PATH, s.handleTest)
-	http.HandleFunc(CB_SERVER_TX_CALLBACK_PATH, s.handleTxCallback)
-	http.HandleFunc(CB_SERVER_ACCT_CALLBACK_PATH, s.handleAcctCallback)
+	s.txWs.Serve("/")
+	s.acctWs.Serve("/")
+	mux := http.NewServeMux()
+	mux.HandleFunc(CB_SERVER_TEST_PATH, s.handleTest)
+	mux.HandleFunc(CB_SERVER_TX_CALLBACK_PATH, s.handleTxCallback)
+	mux.HandleFunc(CB_SERVER_ACCT_CALLBACK_PATH, s.handleAcctCallback)
 	s.logger.Info("Starting HTTP callback server", "port", s.port)
-	err := http.ListenAndServe(":"+s.port, nil)
+	err := http.ListenAndServe(":"+s.port, mux)
 	if err != nil {
 		s.logger.Error("Failed to start HTTP callback server", "error", err)
 	}
