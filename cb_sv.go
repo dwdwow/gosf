@@ -71,8 +71,8 @@ func (s *CallbackServer) handleAcctCallback(w http.ResponseWriter, r *http.Reque
 }
 
 func (s *CallbackServer) Serve() {
-	s.txWs.Serve()
-	s.acctWs.Serve()
+	s.txWs.Serve("/")
+	s.acctWs.Serve("/")
 	http.HandleFunc(CB_SERVER_TEST_PATH, s.handleTest)
 	http.HandleFunc(CB_SERVER_TX_CALLBACK_PATH, s.handleTxCallback)
 	http.HandleFunc(CB_SERVER_ACCT_CALLBACK_PATH, s.handleAcctCallback)

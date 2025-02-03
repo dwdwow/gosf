@@ -54,12 +54,12 @@ func NewSimpleWSServer(port string, logger *slog.Logger) *SimpleWSServer {
 }
 
 // Serve starts the WebSocket server on the specified port
-func (s *SimpleWSServer) Serve() {
+func (s *SimpleWSServer) Serve(path string) {
 	// Start the broadcast handler
 	go s.handleBroadcast()
 
 	// Set up the HTTP handler for WebSocket connections
-	http.HandleFunc("/ws", s.handleConnections)
+	http.HandleFunc(path, s.handleConnections)
 
 	// Start the server
 	s.logger.Info("WebSocket server starting on port", "port", s.port)
@@ -124,7 +124,7 @@ func (s *SimpleWSServer) handleBroadcast() {
 			for client := range s.clients {
 				client := client
 				go func() {
-					err := client.WriteMessage(websocket.BinaryMessage, msg)
+					err := client.WriteMessage(websocket.TextMessage, msg)
 					if err != nil {
 						s.logger.Error("ws broadcast", "error", "Failed to write message", "error", err)
 						client.Close()
