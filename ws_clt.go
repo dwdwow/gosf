@@ -66,15 +66,15 @@ func (c *WsClient) listener() {
 	}
 }
 
-type SimpleWsMsgHandler struct {
-	mux    sync.Mutex
-	sigChk *SigChecker
-	logger *slog.Logger
-}
-
 type SigChecker struct {
 	mux  sync.Mutex
 	sigs map[string]bool
+}
+
+func NewSigChecker() *SigChecker {
+	return &SigChecker{
+		sigs: make(map[string]bool),
+	}
 }
 
 func (c *SigChecker) IsExist(sig string) bool {
@@ -87,10 +87,15 @@ func (c *SigChecker) IsExist(sig string) bool {
 	go func() {
 		time.Sleep(10 * time.Second)
 		c.mux.Lock()
-		defer c.mux.Unlock()
 		delete(c.sigs, sig)
+		c.mux.Unlock()
 	}()
 	return false
+}
+
+type SimpleWsMsgHandler struct {
+	sigChk *SigChecker
+	logger *slog.Logger
 }
 
 func NewSimpleWsMsgHandler(logger *slog.Logger) *SimpleWsMsgHandler {
@@ -98,9 +103,7 @@ func NewSimpleWsMsgHandler(logger *slog.Logger) *SimpleWsMsgHandler {
 		logger = slog.New(slog.NewTextHandler(os.Stdout, nil))
 	}
 	return &SimpleWsMsgHandler{
-		sigChk: &SigChecker{
-			sigs: make(map[string]bool),
-		},
+		sigChk: NewSigChecker(),
 		logger: logger,
 	}
 }
